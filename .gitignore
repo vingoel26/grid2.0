@@ -1,33 +1,78 @@
-# Python
+# ── OS Generated ──
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Python ──
 __pycache__/
 *.py[cod]
+*$py.class
 *.egg-info/
 .venv/
 venv/
-.env
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
 
-# Model weights & datasets (brought in separately / downloaded)
+# ── Environment Variables ──
+.env
+.env.*
+!.env.example
+frontend/.env.local
+
+# ── IDEs / Editors ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.fleet/
+
+# ── Datasets & Model Weights ──
 data/**/*.pt
 data/**/*.onnx
 data/**/*.engine
 data/**/*.pdparams
+data/**/*.pth
+data/**/*.bin
+data/**/*.h5
+data/**/*.pb
+
+# Specific Data Directories
 data/shwd/
 data/helmet_detection/
 data/weather/
 data/tvd/
+data/raw/
+data/processed/
 *.zip
+*.tar
+*.tar.gz
+*.csv
+*.tsv
 
-# Evidence output
+# ── Application Specific ──
 evidence/*
 !evidence/.gitkeep
+logs/
+*.sqlite3
 
-# Node / Next.js
+# ── Node.js / Next.js (Frontend) ──
 node_modules/
 .next/
 out/
-frontend/.env.local
-
-# Misc
-.DS_Store
-*.log
-.pytest_cache/
+build/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
