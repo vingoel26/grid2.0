@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0b0e14;
+  --panel: #141925;
+  --border: #232a3a;
+}
+
+html, body {
+  background: var(--bg);
+  color: #e6e9ef;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}

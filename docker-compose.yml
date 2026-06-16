@@ -1,0 +1,79 @@
+# ── Gridlock 2.0 — full stack ──
+# CPU demo:  docker compose up --build
+# GPU mode:  uncomment the `deploy`/`runtime` block under ml-inference.
+
+services:
+  ml-inference:
+    build: { context: ., dockerfile: ml/Dockerfile }
+    # runtime: nvidia        # ← enable for GPU
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - DEVICE=auto
+      - BACKEND_URL=http://backend:8000
+      - ML_API_KEY=gridlock-ml-key-change-me
+      - EVIDENCE_DIR=/evidence
+    volumes:
+      - ./data:/app/data
+      - evidence:/evidence
+    ports: ["8001:8001"]
+    depends_on: [backend]
+    restart: unless-stopped
+
+  backend:
+    build: { context: ., dockerfile: backend/Dockerfile }
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://gridlock:gridlock@postgres:5432/gridlock
+      - REDIS_URL=redis://redis:6379
+      - ML_API_KEY=gridlock-ml-key-change-me
+      - JWT_SECRET=change-me-in-production
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=gridlock
+      - MINIO_SECRET_KEY=gridlock123
+      - EVIDENCE_DIR=/evidence
+      - CONFIG_DIR=/app/configs
+    volumes:
+      - evidence:/evidence
+    ports: ["8000:8000"]
+    depends_on: [postgres, redis, minio]
+    restart: unless-stopped
+
+  frontend:
+    build: { context: ., dockerfile: frontend/Dockerfile }
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8000
+    ports: ["3000:3000"]
+    depends_on: [backend]
+    restart: unless-stopped
+
+  postgres:
+    image: timescale/timescaledb:latest-pg17
+    environment:
+      POSTGRES_DB: gridlock
+      POSTGRES_USER: gridlock
+      POSTGRES_PASSWORD: gridlock
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./backend/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro
+    ports: ["5432:5432"]
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: gridlock
+      MINIO_ROOT_PASSWORD: gridlock123
+    volumes: [minio_data:/data]
+    ports: ["9000:9000", "9001:9001"]
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+  minio_data:
+  evidence:
