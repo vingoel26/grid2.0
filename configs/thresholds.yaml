@@ -1,0 +1,43 @@
+# ── Per-violation thresholds & metadata (MVA sections + fines in ₹) ──
+# Confidence tiers (applied to FINAL calibrated confidence, see Appendix C)
+enforcement:
+  auto_enforce: 0.90    # >= -> challan auto-generated
+  human_review: 0.70    # >= -> officer queue
+  # < human_review      -> LOG_ONLY
+
+calibration:
+  temperature: 1.3          # temperature scaling on raw conf
+  frame_boost_per: 0.05     # +per consistent frame
+  frame_boost_max: 0.15
+  plate_boost: 0.05         # +if plate readable
+
+# Detection model confidence floors
+detection:
+  vehicle_conf: 0.25
+  person_conf: 0.30
+  plate_conf: 0.30
+  iou: 0.70
+  imgsz_gpu: 640
+  imgsz_cpu: 480
+
+# Per-violation tuning
+violations:
+  helmet:        { conf: 0.80, persist_frames: 3,  rider_iou: 0.30, head_frac: 0.30, fine: 1000, code: "S129" }
+  seatbelt:      { conf: 0.80, persist_frames: 3,  windshield_top: 0.40, windshield_side: 0.15, fine: 1000, code: "S138(3)" }
+  triple_riding: { rider_iou: 0.30, min_riders: 3, persist_frames: 5, fine: 1000, code: "S128" }
+  wrong_side:    { min_trajectory: 10, angle_deg: 120, persist_frames: 10, fine: 5000, code: "S184" }
+  stop_line:     { persist_frames: 1, fine: 1000, code: "S177A" }
+  red_light:     { persist_frames: 1, fine: 5000, code: "S119/177" }
+  illegal_parking: { stationary_seconds: 30, max_displacement_px: 5.0, fine: 500, code: "S122/177" }
+  no_plate:      { plate_iou: 0.10, missing_frames: 15, skip_classes: ["Bicycle", "Three-wheeler"], fine: 5000, code: "S39" }
+
+# OCR
+ocr:
+  min_conf: 0.70
+  plate_regex: '^[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}$'
+
+# Traffic light HSV bands [H_low, H_high, S_min, V_min]
+traffic_light:
+  red:    [[0, 10], [170, 180], 100, 100]
+  yellow: [[20, 40], 100, 100]
+  green:  [[40, 80], 100, 100]

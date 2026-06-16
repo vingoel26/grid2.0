@@ -1,0 +1,24 @@
+# ── Per-camera config: zone polygons + expected lane flow direction ──
+# Polygons are pixel coordinates [[x,y], ...] in the camera frame.
+# expected_flow_direction is in radians (atan2(dy, dx)) of normal traffic flow.
+# These are also editable at runtime via the dashboard /cameras zone editor.
+
+cameras:
+  - id: BTP_MG_ROAD_01
+    name: "MG Road Junction - North"
+    location: { lat: 12.9756, lng: 77.6068 }
+    rtsp_url: "rtsp://demo/mg_road_01"
+    expected_flow_direction: 0.0          # +x (left -> right)
+    stop_line_polygon: [[100, 600], [1180, 600], [1180, 640], [100, 640]]
+    intersection_polygon: [[300, 300], [980, 300], [980, 600], [300, 600]]
+    no_parking_zones:
+      - [[0, 650], [200, 650], [200, 720], [0, 720]]
+
+  - id: BTP_SILK_BOARD_02
+    name: "Silk Board Flyover"
+    location: { lat: 12.9172, lng: 77.6228 }
+    rtsp_url: "rtsp://demo/silk_board_02"
+    expected_flow_direction: 1.5708        # +y (top -> bottom), pi/2
+    stop_line_polygon: [[400, 500], [900, 500], [900, 540], [400, 540]]
+    intersection_polygon: [[350, 200], [950, 200], [950, 500], [350, 500]]
+    no_parking_zones: []

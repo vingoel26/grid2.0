@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Model weights & datasets (brought in separately / downloaded)
+data/**/*.pt
+data/**/*.onnx
+data/**/*.engine
+data/**/*.pdparams
+data/shwd/
+data/helmet_detection/
+data/weather/
+data/tvd/
+*.zip
+
+# Evidence output
+evidence/*
+!evidence/.gitkeep
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+frontend/.env.local
+
+# Misc
+.DS_Store
+*.log
+.pytest_cache/
