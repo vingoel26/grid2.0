@@ -63,8 +63,8 @@ class PipelineConfig:
         self.yolo11s_path = self.data_dir / "uvh26_models/weights/YOLOv11-S/UVH-26-MV-YOLOv11-S.pt"
         self.vehicle_model_path = self.yolo11x_path if self.is_gpu else self.yolo11s_path
         self.person_model_path = "yolo11n.pt"  # auto-downloads via Ultralytics
-        self.plate_model_path = self.data_dir / "plate_model/best.pt"
-        self.seatbelt_model_path = self.data_dir / "seatbelt_model/best.pt"
+        self.plate_model_path = self.data_dir / "plate_model/license-plate-finetune-v1s.pt"
+        self.seatbelt_model_path = self.data_dir / "seatbelt_model/weights/best.pt"
         self.helmet_model_path = self.data_dir / "helmet_model/best.pt"
         self.scene_model_path = self.data_dir / "scene_model/best.pt"
 

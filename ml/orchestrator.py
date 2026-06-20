@@ -197,9 +197,20 @@ class TrafficViolationOrchestrator:
 
     @staticmethod
     def _match_plate(vehicle_bbox, plate_texts) -> tuple[Optional[str], float]:
-        best, best_iou, best_conf = None, 0.0, 0.0
+        best, best_score, best_conf = None, 0.0, 0.0
+        vx1, vy1, vx2, vy2 = vehicle_bbox
+        margin_x = (vx2 - vx1) * 0.20
+        margin_y = (vy2 - vy1) * 0.20
         for bbox, text, conf in plate_texts:
+            # Score by IoU
             iou = compute_iou(vehicle_bbox, bbox)
-            if iou > best_iou and iou > 0.01:
-                best, best_iou, best_conf = text, iou, conf
+            score = iou
+            # Also check plate center inside vehicle bbox (for tiny plates)
+            px = (bbox[0] + bbox[2]) / 2
+            py = (bbox[1] + bbox[3]) / 2
+            if (vx1 - margin_x) <= px <= (vx2 + margin_x) and \
+               (vy1 - margin_y) <= py <= (vy2 + margin_y):
+                score = max(score, 0.5)  # containment match = 0.5 baseline
+            if score > best_score and score > 0.01:
+                best, best_score, best_conf = text, score, conf
         return best, best_conf
