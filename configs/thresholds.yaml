@@ -29,7 +29,7 @@ violations:
   stop_line:     { persist_frames: 1, fine: 1000, code: "S177A" }
   red_light:     { persist_frames: 1, fine: 5000, code: "S119/177" }
   illegal_parking: { stationary_seconds: 30, max_displacement_px: 5.0, fine: 500, code: "S122/177" }
-  no_plate:      { plate_iou: 0.10, missing_frames: 15, skip_classes: ["Bicycle", "Three-wheeler"], fine: 5000, code: "S39" }
+  no_plate:      { plate_iou: 0.10, missing_frames: 45, skip_classes: ["Bicycle", "Three-wheeler", "Two-wheeler"], fine: 5000, code: "S39" }
 
 # OCR
 ocr:

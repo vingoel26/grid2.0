@@ -33,11 +33,15 @@ class PlateOCR:
             from paddleocr import PaddleOCR as _P
 
             use_gpu = self.device.startswith("cuda")
+            # Try newer API first (PaddleOCR 3.7+ dropped show_log/use_gpu)
             try:
-                self._ocr = _P(use_angle_cls=True, lang="en", show_log=False, use_gpu=use_gpu)
-            except TypeError:
-                # newer paddleocr dropped show_log/use_gpu kwargs
                 self._ocr = _P(use_angle_cls=True, lang="en")
+            except Exception:
+                # Fallback for older paddleocr versions
+                try:
+                    self._ocr = _P(use_angle_cls=True, lang="en", show_log=False, use_gpu=use_gpu)
+                except Exception:
+                    self._ocr = _P(use_angle_cls=True, lang="en")
             log.info("[ocr] PaddleOCR ready (gpu=%s)", use_gpu)
         except Exception as e:  # pragma: no cover
             log.warning("[ocr] PaddleOCR unavailable (%s) — UNREADABLE fallback", e)
