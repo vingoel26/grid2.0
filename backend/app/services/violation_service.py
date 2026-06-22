@@ -11,6 +11,30 @@ from ..models import Camera, Violation
 from ..schemas import ViolationCreate
 
 
+import httpx
+from ..core.config import settings
+
+async def _fetch_mappls_jurisdiction(lat: float, lng: float) -> str | None:
+    if not settings.mappls_api_key:
+        return None
+    url = f"https://apis.mappls.com/advancedmaps/v1/{settings.mappls_api_key}/rev_geocode?lat={lat}&lng={lng}"
+    try:
+        async with httpx.AsyncClient(timeout=3.0) as client:
+            resp = await client.get(url)
+            if resp.status_code == 200:
+                data = resp.json()
+                results = data.get("results", [])
+                if results and isinstance(results, list):
+                    item = results[0]
+                    addr = item.get("formatted_address", "")
+                    city = item.get("city", "") or item.get("district", "Unknown")
+                    pincode = item.get("pincode", "")
+                    return f"{addr} [Jurisdiction: {city} Traffic Police, Pin: {pincode}]"
+    except Exception as e:
+        import logging
+        logging.getLogger("backend").warning(f"Mappls rev-geocode failed: {e}")
+    return None
+
 async def create_violation(db: AsyncSession, payload: ViolationCreate) -> Violation:
     data = payload.model_dump()
     # enrich location from camera if known
@@ -21,6 +45,13 @@ async def create_violation(db: AsyncSession, payload: ViolationCreate) -> Violat
         v.location_lat = cam.location_lat
         v.location_lng = cam.location_lng
         v.location_name = cam.name
+        
+        # Mappls Killer Feature: Automated E-Challan Jurisdiction Routing
+        if cam.location_lat and cam.location_lng:
+            jurisdiction = await _fetch_mappls_jurisdiction(cam.location_lat, cam.location_lng)
+            if jurisdiction:
+                v.location_name = jurisdiction
+
     db.add(v)
     await db.commit()
     await db.refresh(v)

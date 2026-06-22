@@ -23,5 +23,7 @@ class Settings(BaseSettings):
 
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    mappls_api_key: str | None = None
+
 
 settings = Settings()
