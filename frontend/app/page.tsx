@@ -5,6 +5,7 @@ import type { Summary, Violation } from "@/lib/types";
 import { useViolationFeed } from "@/lib/useWebSocket";
 import KpiCard from "@/components/KpiCard";
 import ViolationCard from "@/components/ViolationCard";
+import MapplsMap from "@/components/MapplsMap";
 
 export default function Dashboard() {
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -53,6 +54,9 @@ export default function Dashboard() {
         <KpiCard title="Avg Latency" value={summary ? `${summary.avg_latency_ms.toFixed(1)}ms` : "—"}
           sub={summary && summary.avg_latency_ms < 40 ? "✅ < 40ms" : ""} accent="green" />
       </div>
+
+      <h2 className="mb-3 mt-8 text-lg font-semibold text-white">Live Gridlock Hotspots</h2>
+      <MapplsMap violations={recent} />
 
       <h2 className="mb-3 mt-8 text-lg font-semibold text-white">Recent Violations</h2>
       {recent.length === 0 ? (

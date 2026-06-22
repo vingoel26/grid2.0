@@ -183,6 +183,10 @@ class TrafficViolationOrchestrator:
                                     vio("stop_line"), vio("red_light"), ts)
         out += V.check_illegal_parking(track, camera_cfg, vio("illegal_parking"), self.fps, ts)
         out += V.check_no_plate(track, plates, vio("no_plate"), camera_cfg.id, ts)
+        
+        # Mappls Killer Feature: Dynamic Speed Limit Enforcement (Feature 4)
+        out += V.check_speeding(track, vio("speeding"), camera_cfg.id, ts, self.fps)
+        
         return out
 
     def _ocr_plates(self, frame, plate_dets: list[Detection]) -> list[tuple]:
