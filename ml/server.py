@@ -45,7 +45,17 @@ async def lifespan(app: FastAPI):
         w.stop()
 
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="Gridlock 2.0 ML Service", version="2.0.0", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def _violation_brief(v) -> dict:

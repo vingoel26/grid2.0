@@ -9,21 +9,23 @@ export default function MapplsMap({ violations }: { violations: Violation[] }) {
   const [loaded, setLoaded] = useState(false);
   const markersRef = useRef<any[]>([]);
 
-  const initMap = () => {
-    if (typeof window !== "undefined" && (window as any).mappls && containerRef.current && !mapRef.current) {
-      try {
-        mapRef.current = new (window as any).mappls.Map(containerRef.current, {
-          center: [12.9172, 77.6228], // Default to Silk Board
-          zoomControl: true,
-          location: true,
-          zoom: 12,
-        });
-        setLoaded(true);
-      } catch (err) {
-        console.error("Mappls Init Error:", err);
+  useEffect(() => {
+    (window as any).initMappls = () => {
+      if (typeof window !== "undefined" && (window as any).mappls && document.getElementById("mappls-map") && !mapRef.current) {
+        try {
+          mapRef.current = new (window as any).mappls.Map("mappls-map", {
+            center: [12.9172, 77.6228], // Default to Silk Board
+            zoomControl: true,
+            location: true,
+            zoom: 12,
+          });
+          setLoaded(true);
+        } catch (err) {
+          console.error("Mappls Init Error:", err);
+        }
       }
-    }
-  };
+    };
+  }, []);
 
   useEffect(() => {
     if (!loaded || !mapRef.current) return;
@@ -46,19 +48,21 @@ export default function MapplsMap({ violations }: { violations: Violation[] }) {
     });
   }, [violations, loaded]);
 
-  const apiKey = process.env.NEXT_PUBLIC_MAPPLS_API_KEY || "96eecbc8903abee5507fe87ff2af70a6";
+  const apiKey = process.env.NEXT_PUBLIC_MAPPLS_API_KEY || "";
 
   return (
     <>
       <Script 
-        src={`https://apis.mappls.com/advancedmaps/api/${apiKey}/map_sdk?layer=vector&v=3.0`}
+        src={`https://apis.mappls.com/advancedmaps/api/${apiKey}/map_sdk?layer=vector&v=3.0&callback=initMappls`}
         strategy="afterInteractive"
-        onLoad={initMap}
       />
       <div className="card h-96 w-full overflow-hidden p-0 rounded-lg border border-slate-700 mt-8 relative">
-        <div ref={containerRef} className="h-full w-full bg-slate-800 flex items-center justify-center">
-            {!loaded && <span className="text-slate-500 animate-pulse">Loading Mappls 3D Map SDK...</span>}
-        </div>
+        {!loaded && (
+          <div className="absolute inset-0 bg-slate-800 flex items-center justify-center z-10">
+            <span className="text-slate-500 animate-pulse">Loading Mappls 3D Map SDK...</span>
+          </div>
+        )}
+        <div id="mappls-map" ref={containerRef} style={{ width: '100%', height: '100%', minHeight: '384px' }} />
       </div>
     </>
   );
