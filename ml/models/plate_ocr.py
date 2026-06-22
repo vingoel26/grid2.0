@@ -34,10 +34,9 @@ class PlateOCR:
 
             use_gpu = self.device.startswith("cuda")
             try:
-                self._ocr = _P(use_angle_cls=True, lang="en", show_log=False, use_gpu=use_gpu)
-            except TypeError:
-                # newer paddleocr dropped show_log/use_gpu kwargs
                 self._ocr = _P(use_angle_cls=True, lang="en")
+            except Exception:
+                self._ocr = None
             log.info("[ocr] PaddleOCR ready (gpu=%s)", use_gpu)
         except Exception as e:  # pragma: no cover
             log.warning("[ocr] PaddleOCR unavailable (%s) — UNREADABLE fallback", e)
@@ -53,7 +52,7 @@ class PlateOCR:
         if self._ocr is None or crop is None or getattr(crop, "size", 0) == 0:
             return "UNREADABLE", 0.0
         try:
-            result = self._ocr.ocr(crop, cls=True)
+            result = self._ocr.ocr(crop)
         except Exception as e:  # pragma: no cover
             log.warning("[ocr] inference error: %s", e)
             return "UNREADABLE", 0.0

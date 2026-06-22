@@ -21,6 +21,16 @@ class Settings(BaseSettings):
     minio_bucket: str = "evidence"
     minio_secure: bool = False
 
+    # Notifications
+    notification_mode: str = "console"  # 'console' or 'live'
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    twilio_sid: str = ""
+    twilio_token: str = ""
+    twilio_from: str = ""
+
     cors_origins: list[str] = ["http://localhost:3000"]
 
 

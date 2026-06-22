@@ -1,5 +1,6 @@
 import type {
   Camera, HeatmapPoint, HourlyPoint, Summary, Violation, ViolationList,
+  Challan, ChallanList
 } from "./types";
 
 export const API_URL =
@@ -61,6 +62,16 @@ export const api = {
     }),
 
   cameras: () => req<Camera[]>("/api/v1/cameras"),
+  
+  challans: (params: Record<string, string | number | undefined> = {}) => {
+    const q = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => {
+      if (v !== undefined && v !== "") q.set(k, String(v));
+    });
+    return req<ChallanList>(`/api/v1/challans?${q.toString()}`);
+  },
+  challan: (id: string) => req<Challan>(`/api/v1/challans/${id}`),
+  challanPdfUrl: (id: string) => `${API_URL}/api/v1/challans/${id}/pdf`,
 };
 
 export function evidenceUrl(path?: string | null): string | null {

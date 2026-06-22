@@ -1,0 +1,32 @@
+{
+  "KA01AB1234": {
+    "name": "Arjun Sharma",
+    "phone": "+919876543210",
+    "email": "arjun.s@example.com",
+    "address": "123, MG Road, Bangalore, Karnataka 560001"
+  },
+  "MH12CD5678": {
+    "name": "Priya Patel",
+    "phone": "+919876543211",
+    "email": "priya.p@example.com",
+    "address": "456, FC Road, Pune, Maharashtra 411004"
+  },
+  "DL01EF9012": {
+    "name": "Rahul Verma",
+    "phone": "+919876543212",
+    "email": "rahul.v@example.com",
+    "address": "789, Connaught Place, New Delhi 110001"
+  },
+  "TN09GH3456": {
+    "name": "Sneha Krishnan",
+    "phone": "+919876543213",
+    "email": "sneha.k@example.com",
+    "address": "101, Mount Road, Chennai, Tamil Nadu 600002"
+  },
+  "TS09IJ7890": {
+    "name": "Vikram Reddy",
+    "phone": "+919876543214",
+    "email": "vikram.r@example.com",
+    "address": "202, Jubilee Hills, Hyderabad, Telangana 500033"
+  }
+}

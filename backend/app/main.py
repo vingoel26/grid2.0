@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from .api import analytics, auth, cameras, violations, websocket
+from .api import analytics, auth, cameras, violations, websocket, challans
 from .core.config import settings
 from .core.database import Base, engine
 
@@ -91,6 +91,7 @@ app.include_router(auth.router)
 app.include_router(violations.router)
 app.include_router(analytics.router)
 app.include_router(cameras.router)
+app.include_router(challans.router)
 app.include_router(websocket.router)
 
 # Serve evidence files (annotated images, clips) for the dashboard.

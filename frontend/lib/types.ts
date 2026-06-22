@@ -42,6 +42,38 @@ export interface ViolationList {
   items: Violation[];
 }
 
+export interface Challan {
+  id: string;
+  challan_number: string;
+  violation_id: string;
+  
+  owner_name?: string | null;
+  owner_phone?: string | null;
+  owner_email?: string | null;
+  owner_address?: string | null;
+  
+  status: string;
+  sent_via?: string | null;
+  sent_at?: string | null;
+  delivered_at?: string | null;
+  
+  pdf_path?: string | null;
+  
+  payment_due_date?: string | null;
+  payment_status: string;
+  payment_ref?: string | null;
+  
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChallanList {
+  total: number;
+  page: number;
+  page_size: number;
+  items: Challan[];
+}
+
 export interface Summary {
   total_today: number;
   total_all_time: number;

@@ -12,6 +12,7 @@ from ..core.database import get_db
 from ..core.security import get_current_user, require_role, verify_api_key
 from ..schemas import ViolationCreate, ViolationList, ViolationOut, ViolationReview
 from ..services import violation_service as svc
+from ..services import challan_service
 
 router = APIRouter(prefix="/api/v1/violations", tags=["violations"])
 
@@ -73,9 +74,17 @@ async def review(violation_id: str, body: ViolationReview,
                                    user["username"])
     if not v:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Violation not found")
+        
+    # Trigger Challan Pipeline if CONFIRMED
+    challan_number = None
+    if v.status == "CONFIRMED":
+        challan = await challan_service.dispatch_challan(db, v)
+        if challan:
+            challan_number = challan.challan_number
+
     await redis_bus.publish({
         "type": "review_update",
         "data": {"violation_id": v.violation_id, "status": v.status,
-                 "reviewed_by": v.reviewed_by},
+                 "reviewed_by": v.reviewed_by, "challan_number": challan_number},
     })
     return v

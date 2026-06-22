@@ -39,6 +39,35 @@ CREATE TABLE IF NOT EXISTS violations (
     created_at              TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS challans (
+    id                      VARCHAR(36) PRIMARY KEY,
+    challan_number          VARCHAR(50) UNIQUE NOT NULL,
+    violation_id            VARCHAR(50) NOT NULL,
+    
+    owner_name              VARCHAR(100),
+    owner_phone             VARCHAR(20),
+    owner_email             VARCHAR(100),
+    owner_address           TEXT,
+    
+    status                  VARCHAR(20) DEFAULT 'GENERATED',
+    sent_via                VARCHAR(20),
+    sent_at                 TIMESTAMPTZ,
+    delivered_at            TIMESTAMPTZ,
+    
+    pdf_path                VARCHAR(255),
+    
+    payment_due_date        TIMESTAMPTZ,
+    payment_status          VARCHAR(20) DEFAULT 'UNPAID',
+    payment_ref             VARCHAR(100),
+    
+    created_at              TIMESTAMPTZ DEFAULT NOW(),
+    updated_at              TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_challans_violation_id ON challans(violation_id);
+CREATE INDEX IF NOT EXISTS idx_challans_status ON challans(status);
+CREATE INDEX IF NOT EXISTS idx_challans_payment_status ON challans(payment_status);
+
 -- Promote to a hypertable. TimescaleDB requires every UNIQUE index to include
 -- the partition column (occurred_at). Our PK is `id` alone, so a strict
 -- conversion would fail — we attempt it best-effort and fall back to a plain
