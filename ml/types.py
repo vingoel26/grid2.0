@@ -67,6 +67,7 @@ class Track:
     triple_riding_frames: int = 0
     wrong_side_frames: int = 0
     no_plate_frames: int = 0
+    speeding_frames: int = 0
 
     # Best confidence observed for each violation kind (for evidence)
     _conf_cache: dict[str, float] = field(default_factory=dict)
@@ -116,7 +117,7 @@ UVH26_CLASSES: dict[int, str] = {
     9: "Mini-bus", 10: "Tempo-traveller", 11: "Bicycle", 12: "Van", 13: "Others",
 }
 
-CAR_CLASSES = {"Hatchback", "Sedan", "SUV", "MUV", "Van"}
+CAR_CLASSES = {"Hatchback", "Sedan", "SUV", "MUV", "Van", "Truck", "Bus", "LCV", "Mini-bus", "Tempo-traveller"}
 TWO_WHEELER = "Two-wheeler"
 
 # Violation type -> (MVA section, fine ₹)
@@ -129,4 +130,5 @@ VIOLATION_META: dict[str, tuple[str, int]] = {
     "RED_LIGHT_VIOLATION": ("S119/177", 5000),
     "ILLEGAL_PARKING": ("S122/177", 500),
     "NO_PLATE": ("S39", 5000),
+    "SPEEDING": ("S112", 2000),
 }

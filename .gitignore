@@ -38,6 +38,7 @@ frontend/.env.local
 .fleet/
 
 # ── Datasets & Model Weights ──
+*.pt
 data/**/*.pt
 data/**/*.onnx
 data/**/*.engine
@@ -64,6 +65,7 @@ evidence/*
 !evidence/.gitkeep
 logs/
 *.sqlite3
+*.db
 
 # ── Node.js / Next.js (Frontend) ──
 node_modules/

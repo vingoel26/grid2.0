@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url: str = "postgresql+asyncpg://gridlock:gridlock@localhost:5432/gridlock"
+    database_url: str = "sqlite+aiosqlite:///./gridlock.db"
     redis_url: str = "redis://localhost:6379"
 
     ml_api_key: str = "gridlock-ml-key-change-me"
@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     twilio_from: str = ""
 
     cors_origins: list[str] = ["http://localhost:3000"]
+
+    mappls_api_key: str | None = None
 
 
 settings = Settings()

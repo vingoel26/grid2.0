@@ -42,3 +42,44 @@ async def update_camera(camera_id: str, body: CameraUpdate, db: AsyncSession = D
     await db.commit()
     await db.refresh(cam)
     return cam
+
+import httpx
+from ..core.config import settings
+
+@router.get("/{camera_id}/emergency_route")
+async def get_emergency_route(camera_id: str, db: AsyncSession = Depends(get_db), _u: dict = Depends(get_current_user)):
+    """Mappls Killer Feature: First-Responder Routing. 
+    Returns the fastest route from a predefined Emergency Hub to the camera location."""
+    cam = await db.get(Camera, camera_id)
+    if not cam or not cam.location_lat or not cam.location_lng:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Camera location not configured")
+    
+    if not settings.mappls_api_key:
+        raise HTTPException(status.HTTP_501_NOT_IMPLEMENTED, "Mappls API key not configured")
+
+    # Hardcoded Emergency Hub for Hackathon (e.g., Central Police Station)
+    # Using approx center of Bangalore for demo purposes: 12.9716, 77.5946
+    start_lat, start_lng = 12.9716, 77.5946
+    
+    url = f"https://apis.mappls.com/advancedmaps/v1/{settings.mappls_api_key}/route_adv/driving/{start_lng},{start_lat};{cam.location_lng},{cam.location_lat}"
+    
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(url)
+            if resp.status_code == 200:
+                data = resp.json()
+                routes = data.get("routes", [])
+                if routes:
+                    route = routes[0]
+                    return {
+                        "status": "success",
+                        "distance_meters": route.get("distance"),
+                        "duration_seconds": route.get("duration"),
+                        "geometry": route.get("geometry"),
+                        "hub": {"lat": start_lat, "lng": start_lng},
+                        "destination": {"lat": cam.location_lat, "lng": cam.location_lng}
+                    }
+            return {"status": "error", "message": "Mappls routing failed or no route found"}
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Routing API error: {e}")
+

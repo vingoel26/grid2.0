@@ -27,8 +27,13 @@ async def get_redis() -> aioredis.Redis | None:
 
 
 async def publish(message: dict) -> None:
+    from ..api.websocket import manager
     r = await get_redis()
     if r is None:
+        try:
+            await manager.broadcast(message)
+        except Exception as e:
+            log.warning("local broadcast failed: %s", e)
         return
     try:
         await r.publish(CHANNEL, json.dumps(message, default=str))
