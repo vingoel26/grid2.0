@@ -46,6 +46,7 @@ export interface Challan {
   id: string;
   challan_number: string;
   violation_id: string;
+  plate_number?: string | null;
   
   owner_name?: string | null;
   owner_phone?: string | null;

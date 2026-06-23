@@ -1,20 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
 
 export const metadata: Metadata = {
-  title: "Gridlock 2.0 — Traffic Violation Dashboard",
+  title: "Gridlock 2.0 — Traffic Violation Detection",
   description: "AI-powered traffic violation detection for Bengaluru",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 overflow-x-hidden p-6">{children}</main>
-        </div>
+      <body className="antialiased font-sans text-slate-900 bg-white">
+        {children}
       </body>
     </html>
   );

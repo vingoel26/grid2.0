@@ -4,12 +4,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { clearToken } from "@/lib/api";
 
 const NAV = [
-  { href: "/", label: "Dashboard", icon: "▦" },
-  { href: "/violations", label: "Violations", icon: "⚠" },
-  { href: "/review", label: "Review Queue", icon: "✓" },
-  { href: "/challans", label: "Challans", icon: "📋" },
-  { href: "/analytics", label: "Analytics", icon: "📈" },
-  { href: "/cameras", label: "Cameras", icon: "📷" },
+  { href: "/dashboard", label: "Dashboard", icon: "▦" },
+  { href: "/dashboard/violations", label: "Violations", icon: "⚠" },
+  { href: "/dashboard/review", label: "Review Queue", icon: "✓" },
+  { href: "/dashboard/challans", label: "Challans", icon: "📋" },
+  { href: "/dashboard/analytics", label: "Analytics", icon: "📈" },
+  { href: "/dashboard/cameras", label: "Cameras", icon: "📷" },
 ];
 
 export default function Sidebar() {
@@ -25,7 +25,7 @@ export default function Sidebar() {
       </div>
       <nav className="flex flex-col gap-1">
         {NAV.map((n) => {
-          const active = path === n.href || (n.href !== "/" && path.startsWith(n.href));
+          const active = path === n.href || (n.href !== "/dashboard" && path.startsWith(n.href));
           return (
             <Link
               key={n.href}
